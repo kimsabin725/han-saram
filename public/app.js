@@ -86,7 +86,7 @@ $('#runDiagnose').onclick = () => {
       ${h.reason ? `<div class="reason">${esc(h.reason)}</div>` : ''}
     </div>`).join('');
   $('#flowNotes').innerHTML = r.notes.map((n) => `<li>${esc(n)}</li>`).join('') +
-    `<li>지정 없이 남에게 줄 수 있는 최대 금액(총재산 − 유류분 합계): <b>${won(r.freeDisposable)}</b></li>`;
+    `<li>지정으로 상속인이 아닌 사람에게 보낼 수 있는 최대 금액(총재산 − 유류분 합계): <b>${won(r.freeDisposable)}</b></li>`;
   $('#flow').hidden = false;
   fillTargets();
   markDone(1); toast('계산했습니다. 아래에서 결과를 확인하세요.');

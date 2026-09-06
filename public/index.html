@@ -29,8 +29,8 @@
 <!-- ── 1. 진단 ─────────────────────────────── -->
 <section class="panel" id="s1">
   <h2>지금 죽으면, 내 돈은 누구에게 갑니까</h2>
-  <p class="lede">로그인하지 않습니다. 실명·주민등록번호·계좌번호를 묻지 않습니다.
-  아무에게도 관계를 설명하지 않고 자기 상황만 확인할 수 있습니다.</p>
+  <p class="lede">로그인도, 실명·주민등록번호·계좌번호도 묻지 않습니다.
+  누구와 마주 앉지 않고, 지금 내 상황이 어떻게 되어 있는지만 확인합니다.</p>
 
   <div class="card">
     <h3>1) 보유 자산</h3>
@@ -44,7 +44,7 @@
 
   <div class="card">
     <h3>2) 내 주변 사람</h3>
-    <p class="hint">법정상속인이 아닌 사람(사실혼 파트너 등)도 넣으세요. <b>그게 이 서비스의 핵심입니다.</b></p>
+    <p class="hint">법정상속인이 아닌 사람 — 함께 사는 동반자, 오래 돌봐 준 사람 — 도 꼭 넣으세요. <b>법이 그 사람을 어디에 두는지 보여 드리는 것</b>이 이 서비스가 하는 일입니다.</p>
     <table class="grid" id="people">
       <thead><tr><th>표시 이름</th><th>관계</th><th></th></tr></thead>
       <tbody></tbody>
@@ -72,8 +72,8 @@
 <section class="panel" id="s2" hidden>
   <h2>거래내역이 말해주는 관계</h2>
   <p class="lede">적요는 사람마다 다르게 씁니다 — "생활비", "○○엄마", "엄니", "월세보탬".
-  금액·주기·적요의 <b>조합</b>으로만 읽히는 이 관계는 규칙으로 잡히지 않습니다.
-  <b>여기서 생성형 AI가 일합니다.</b></p>
+  금액과 주기, 적요의 표현을 함께 읽어야 보이는 관계라 규칙으로는 잡히지 않습니다.
+  <b>이 부분을 생성형 AI가 읽습니다.</b></p>
 
   <div class="card">
     <label class="file">
@@ -81,7 +81,7 @@
       <span>거래내역 CSV 선택</span>
     </label>
     <button class="ghost" id="useSampleCsv" type="button">심사용 샘플 거래내역 사용</button>
-    <p class="hint" id="csvInfo">CSV는 <b>브라우저에서 파싱</b>됩니다. 날짜·적요·금액 열만 남기고 나머지 열(계좌번호·잔액 등)은 버립니다. 남긴 내용은 서버에 저장되지 않으며, 관계 추론을 위해 생성형 AI(Google Gemini API)로 1회 전송됩니다.</p>
+    <p class="hint" id="csvInfo">CSV는 <b>브라우저에서 읽습니다.</b> 날짜·적요·금액 열만 남기고 계좌번호·잔액 같은 나머지 열은 버립니다. 서버에 저장하지 않으며, 관계 추론을 위해 생성형 AI(Google Gemini API)로 한 번 전송됩니다.</p>
   </div>
 
   <div class="actions">
@@ -95,17 +95,17 @@
 <!-- ── 3. 지정 설계 ────────────────────────── -->
 <section class="panel" id="s3" hidden>
   <h2>법이 이미 허용한 방법으로 연결합니다</h2>
-  <p class="lede">새 제도를 만들지 않습니다. <b>이미 합법적으로 존재하는 지정 수단</b>을 자산별로 매칭하고,
-  그대로 옮겨 적을 실행 문구를 만듭니다.</p>
+  <p class="lede">새 제도를 만들지 않습니다. <b>이미 합법적으로 쓸 수 있는 지정 수단</b>을 자산별로 찾아 드리고,
+  그대로 옮겨 적을 수 있는 문구를 만듭니다.</p>
 
   <div class="card">
-    <label>이 사람에게 가게 하고 싶다
+    <label>이 사람에게 가게 하고 싶습니다
       <select id="targetPerson"></select>
     </label>
-    <label>관계 설명 (지정 서류·소명서에 쓰입니다)
+    <label>관계 설명 (지정 서류·소명 자료에 들어갑니다)
       <input type="text" id="targetRelationship" placeholder="예: 2020년부터 함께 생활해 온 동반자. 혼인신고는 하지 않았습니다.">
     </label>
-    <p class="hint">여기 적은 내용은 문구 생성을 위해 생성형 AI로 전송됩니다. 실명·주민번호·계좌번호는 적지 마세요.</p>
+    <p class="hint">여기 적은 내용은 문구를 만들기 위해 생성형 AI로 전송됩니다. 실명·주민등록번호·계좌번호는 적지 마세요.</p>
   </div>
 
   <div class="actions">
@@ -122,7 +122,7 @@
 
   <div class="card">
     <h3>내 상황에 대해 묻기</h3>
-    <p class="hint">"사실혼인데 뭐가 되고 뭐가 안 되나" — 케이스가 조합 폭발이라 FAQ로 덮을 수 없습니다.</p>
+    <p class="hint">"사실혼인데 이건 되고 저건 안 되나요?" — 자산·관계·수단의 조합이 사람마다 달라 정해진 답이 없습니다. 내 경우로 물어보세요.</p>
     <div class="askrow">
       <input type="text" id="askInput" placeholder="예: 혼인신고를 안 했는데 전세보증금은 어떻게 되나요?">
       <button class="primary" id="runAsk" type="button">질문</button>
