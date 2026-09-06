@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>한 사람 — 내가 정한 사람에게 흐르게 한다</title>
+<meta name="description" content="지금 죽으면 내 돈이 누구에게 가는지 확인하고, 법이 이미 허용한 지정 수단으로 연결합니다.">
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<header class="top">
+  <div class="wrap topbar">
+    <a class="brand" href="/"><span class="mark">한&nbsp;사람</span></a>
+    <p class="tagline">상속은 법이 정한 순서로 흐른다.<br><b>이 서비스는 내가 정한 사람에게 흐르게 한다.</b></p>
+  </div>
+</header>
+
+<nav class="steps wrap" aria-label="진행 단계">
+  <ol id="stepnav">
+    <li data-step="1" class="on"><span>1</span>진단</li>
+    <li data-step="2"><span>2</span>감지</li>
+    <li data-step="3"><span>3</span>지정 설계</li>
+    <li data-step="4"><span>4</span>요약</li>
+  </ol>
+</nav>
+
+<main class="wrap">
+
+<!-- ── 1. 진단 ─────────────────────────────── -->
+<section class="panel" id="s1">
+  <h2>지금 죽으면, 내 돈은 누구에게 갑니까</h2>
+  <p class="lede">로그인하지 않습니다. 실명·주민등록번호·계좌번호를 묻지 않습니다.
+  아무에게도 관계를 설명하지 않고 자기 상황만 확인할 수 있습니다.</p>
+
+  <div class="card">
+    <h3>1) 보유 자산</h3>
+    <table class="grid" id="assets">
+      <thead><tr><th>자산 유형</th><th>금융기관(선택)</th><th class="num">금액(원)</th><th></th></tr></thead>
+      <tbody></tbody>
+    </table>
+    <button class="ghost" id="addAsset" type="button">+ 자산 추가</button>
+    <p class="total">합계 <b id="estateTotal">0원</b></p>
+  </div>
+
+  <div class="card">
+    <h3>2) 내 주변 사람</h3>
+    <p class="hint">법정상속인이 아닌 사람(사실혼 파트너 등)도 넣으세요. <b>그게 이 서비스의 핵심입니다.</b></p>
+    <table class="grid" id="people">
+      <thead><tr><th>표시 이름</th><th>관계</th><th></th></tr></thead>
+      <tbody></tbody>
+    </table>
+    <button class="ghost" id="addPerson" type="button">+ 사람 추가</button>
+  </div>
+
+  <div class="actions">
+    <button class="primary" id="runDiagnose" type="button">유고 시 자금 흐름 계산</button>
+    <button class="ghost" id="loadSample" type="button">예시 상황 불러오기</button>
+  </div>
+
+  <div id="flow" hidden>
+    <div class="card result">
+      <h3>유고 시 자금 흐름</h3>
+      <div id="flowChart"></div>
+      <ul class="notes" id="flowNotes"></ul>
+      <p class="meta">계산 근거: 민법 제1000조(순위)·제1003조(배우자)·제1009조(법정상속분)·제1112조(유류분).
+      개정 민법 법률 제21454호(2026-03-17 시행) 반영. 이 계산은 규칙 엔진이 수행하며 AI가 개입하지 않습니다.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ── 2. 감지 ─────────────────────────────── -->
+<section class="panel" id="s2" hidden>
+  <h2>거래내역이 말해주는 관계</h2>
+  <p class="lede">적요는 사람마다 다르게 씁니다 — "생활비", "○○엄마", "엄니", "월세보탬".
+  금액·주기·적요의 <b>조합</b>으로만 읽히는 이 관계는 규칙으로 잡히지 않습니다.
+  <b>여기서 생성형 AI가 일합니다.</b></p>
+
+  <div class="card">
+    <label class="file">
+      <input type="file" id="csvFile" accept=".csv,text/csv">
+      <span>거래내역 CSV 선택</span>
+    </label>
+    <button class="ghost" id="useSampleCsv" type="button">심사용 샘플 거래내역 사용</button>
+    <p class="hint" id="csvInfo">CSV는 <b>브라우저에서 파싱</b>됩니다. 날짜·적요·금액 열만 남기고 나머지 열(계좌번호·잔액 등)은 버립니다. 남긴 내용은 서버에 저장되지 않으며, 관계 추론을 위해 생성형 AI(Google Gemini API)로 1회 전송됩니다.</p>
+  </div>
+
+  <div class="actions">
+    <button class="primary" id="runRelation" type="button" disabled>관계 추론</button>
+  </div>
+
+  <div id="relationOut" hidden></div>
+  <div id="diagnoseOut" hidden></div>
+</section>
+
+<!-- ── 3. 지정 설계 ────────────────────────── -->
+<section class="panel" id="s3" hidden>
+  <h2>법이 이미 허용한 방법으로 연결합니다</h2>
+  <p class="lede">새 제도를 만들지 않습니다. <b>이미 합법적으로 존재하는 지정 수단</b>을 자산별로 매칭하고,
+  그대로 옮겨 적을 실행 문구를 만듭니다.</p>
+
+  <div class="card">
+    <label>이 사람에게 가게 하고 싶다
+      <select id="targetPerson"></select>
+    </label>
+    <label>관계 설명 (지정 서류·소명서에 쓰입니다)
+      <input type="text" id="targetRelationship" placeholder="예: 2020년부터 함께 생활해 온 동반자. 혼인신고는 하지 않았습니다.">
+    </label>
+    <p class="hint">여기 적은 내용은 문구 생성을 위해 생성형 AI로 전송됩니다. 실명·주민번호·계좌번호는 적지 마세요.</p>
+  </div>
+
+  <div class="actions">
+    <button class="primary" id="runDraft" type="button">지정 수단 매칭 + 실행 문구 생성</button>
+  </div>
+
+  <div id="draftOut" hidden></div>
+</section>
+
+<!-- ── 4. 요약 ─────────────────────────────── -->
+<section class="panel" id="s4" hidden>
+  <h2>지정 전 / 지정 후</h2>
+  <div id="summaryOut"></div>
+
+  <div class="card">
+    <h3>내 상황에 대해 묻기</h3>
+    <p class="hint">"사실혼인데 뭐가 되고 뭐가 안 되나" — 케이스가 조합 폭발이라 FAQ로 덮을 수 없습니다.</p>
+    <div class="askrow">
+      <input type="text" id="askInput" placeholder="예: 혼인신고를 안 했는데 전세보증금은 어떻게 되나요?">
+      <button class="primary" id="runAsk" type="button">질문</button>
+    </div>
+    <div id="askOut"></div>
+  </div>
+</section>
+
+<div class="navbtns">
+  <button class="ghost" id="prevBtn" type="button" hidden>← 이전</button>
+  <button class="ghost" id="nextBtn" type="button" hidden>다음 →</button>
+</div>
+
+<p class="disclaimer">이 서비스는 법률 자문이 아니라 정보 제공입니다. 실제 지정·계약은 해당 금융기관과 전문가를 통해 확정하세요.
+상속 순위는 강행규정이며, 이 서비스가 상속인을 정하거나 바꾸지 않습니다. AI가 만든 문구·추론은 초안이며 확정은 사용자가 합니다.</p>
+
+<details class="privacy">
+  <summary>개인정보 처리 안내</summary>
+  <ul>
+    <li><b>수집하지 않는 것</b>: 실명(가명 입력으로 동작), 주민등록번호, 계좌번호, 연락처, 로그인 정보.</li>
+    <li><b>저장하지 않는 것</b>: 입력한 자산·관계·거래내역은 이 서비스의 서버나 데이터베이스에 저장되지 않습니다. 화면을 닫으면 사라집니다.</li>
+    <li><b>전송되는 것</b>: 관계 추론·문구 생성·질의응답을 누를 때, 그 화면의 입력(날짜·적요·금액, 표시 이름, 관계 설명, 질문)이 생성형 AI 사업자(Google Gemini API, 미국)로 전송되어 처리됩니다. 전송 전 계좌·카드번호 꼴 숫자는 마스킹됩니다.</li>
+    <li><b>로그</b>: 오류 상태코드만 기록하며 입력 본문은 기록하지 않습니다.</li>
+  </ul>
+</details>
+
+</main>
+
+<div id="toast" role="status" aria-live="polite"></div>
+<footer class="wrap foot">
+  <p>「한 사람」 · 2026 금융 AI Challenge 출품작 · 팀 SBK</p>
+</footer>
+
+<script type="module" src="/app.js"></script>
+</body>
+</html>

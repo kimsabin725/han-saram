@@ -1,0 +1,19 @@
+{
+  "name": "han-saram",
+  "version": "1.0.0",
+  "description": "「한 사람」 — 내가 정한 사람에게 흐르게 하는 지정 수취인 인프라",
+  "type": "module",
+  "private": true,
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "smoke": "node scripts/smoke-ai.mjs",
+    "models": "node scripts/smoke-ai.mjs --models"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.123.0",
+    "@google/genai": "^2.21.0",
+    "zod": "^3.25.76"
+  }
+}
