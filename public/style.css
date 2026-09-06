@@ -10,7 +10,7 @@
   --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.35);}
 }
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);
+body{margin:0;background:var(--bg);color:var(--ink);word-break:keep-all;overflow-wrap:anywhere;
   font:16px/1.65 -apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Pretendard","Noto Sans KR",sans-serif;
   -webkit-font-smoothing:antialiased}
 .wrap{max-width:880px;margin:0 auto;padding:0 20px}
