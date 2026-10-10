@@ -9,7 +9,8 @@
   },
   "scripts": {
     "smoke": "node scripts/smoke-ai.mjs",
-    "models": "node scripts/smoke-ai.mjs --models"
+    "models": "node scripts/smoke-ai.mjs --models",
+    "verify": "node scripts/verify-inheritance.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.123.0",

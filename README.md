@@ -1,34 +1,39 @@
 # 「한 사람」 — 지정 수취인 진단·설계 서비스
 
-2026 금융 AI Challenge 출품작 (팀 SBK, 1인) · 마감 **2026-09-07(월) 10:00**
+2026 금융 AI Challenge 출품작 (1인) · 2026-09-06 제출 · 발표심사 대상(11팀)에는 선정되지 않았습니다.
 
 > 상속은 법이 정한 순서로 흐른다. 이 서비스는 내가 정한 사람에게 흐르게 한다.
 
 ## 구조
 
 ```
-app/
-├── public/
-│   ├── index.html               4단계 단일 페이지
-│   ├── app.js                   화면 로직 (ES 모듈)
-│   ├── style.css                라이트/다크 대응
-│   ├── lib/inheritance.js       ★ 법정상속 계산 엔진 (결정론적, AI 미사용)
-│   └── sample-transactions.csv  심사자용 샘플 거래내역
-├── api/ai.js                    생성형 AI 엔드포인트 (Vercel 서버리스, 4개 task)
-├── package.json / vercel.json
+public/
+├── index.html               4단계 단일 페이지
+├── app.js                   화면 로직 (ES 모듈)
+├── style.css                라이트/다크 대응
+├── lib/inheritance.js       ★ 법정상속 계산 엔진 (결정론적, AI 미사용)
+└── sample-transactions.csv  심사자용 샘플 거래내역
+api/ai.js                    생성형 AI 엔드포인트 (Vercel 서버리스, 4개 task)
+scripts/verify-inheritance.mjs  계산 엔진 전수 검산
+scripts/smoke-ai.mjs         AI 4개 task 호출 점검
+package.json / vercel.json
 ```
-
 **설계 원칙: 계산은 규칙, 해석은 AI.** 법정상속분은 결정론적 계산이므로 규칙 엔진이 하고,
 생성형 AI는 비정형 자연어(거래 적요 해석·개인별 서술·문서 작성·질의응답)만 담당한다.
 
 ## 법령 기준
 
-민법(법률 제21454호, **2026-03-17 공포·시행**) 제1000·1003·1009·1112·1057조의2조,
+민법(법률 제21454호, **2026-03-17 공포·시행**) 제1000·1003·1004조의2·1009·1057조의2·1112조,
 신탁법 59조, 상법 733조.
 형제자매 유류분(1112조 4호)은 헌재 2024-04-25 결정으로 **효력 상실**.
 유류분 반환은 2026년 개정으로 **가액(금전) 반환**.
+상속권 상실 선고(1004조의2)는 2026-01-01 시행, 제21454호 개정으로 전 상속인에 적용된다.
 
 ## 계산 엔진 검산
+
+**전수 검산:** `npm run verify` — 가족 구성 864가지 × 재산 11구간 = **9,504 케이스**를 조문별 6개 항목(1009조 합계·배우자 가산, 1000조 최근친 우선, 1112조 유류분, 1003조 형제자매 배제, 사실혼 파트너 표시)으로 확인한다. 2026-10-10 이 저장소의 엔진으로 실행해 실패 0을 확인했다. 엔진(`public/lib/inheritance.js`)은 제출본(2026-09-06)에서 바뀌지 않았다.
+
+아래는 대표 케이스를 한 번에 돌려 보는 예시다.
 
 ```bash
 node --input-type=module -e "import('./public/lib/inheritance.js').then(m=>{
@@ -45,39 +50,18 @@ node --input-type=module -e "import('./public/lib/inheritance.js').then(m=>{
 | 형제자매만 | 균분, **유류분 0** (1112조 4호 실효) | ✅ |
 | 사실혼 파트너 + 부모 + 형제 | 부모 100%, 파트너·형제 0원 (사유 표시) | ✅ |
 
-## 배포 (남은 작업)
+## 실행
 
-**필요한 것 2개 — 사용자만 할 수 있음**
-
-1. **Gemini API 키** — aistudio.google.com 로그인 → Get API key (카드 등록 없음, 무료 티어)
-2. **Vercel 계정** — GitHub 계정으로 로그인 가능
+데모: **https://han-saram.vercel.app**
 
 ```bash
-cd ~/Downloads/해커톤/AI\ challenge/app
-npm i -g vercel        # 또는  npx vercel
-vercel login
-vercel env add GEMINI_API_KEY production   # 키 붙여넣기
-vercel --prod
+npm install
+npm run verify                     # 법정상속 계산 엔진 전수 검산 (AI·키 불필요)
+GEMINI_API_KEY=... npm run smoke   # 생성형 AI 4개 task 실제 호출
 ```
 
 AI 공급자는 `api/ai.js`가 환경변수로 고른다. `GEMINI_API_KEY`가 있으면 Gemini, 없고 `ANTHROPIC_API_KEY`가 있으면 Claude.
 `AI_PROVIDER=gemini|anthropic`로 강제할 수 있고, 모델은 `GEMINI_MODEL` / `ANTHROPIC_MODEL`로 바꾼다.
-
-배포 전 로컬 확인:
-
-```bash
-GEMINI_API_KEY=... npm run models   # 이 키로 쓸 수 있는 모델 목록
-GEMINI_API_KEY=... npm run smoke    # 4개 task 실제 호출
-```
-
-배포 후 `docs/기능명세서_한사람_v1.md`의 **배포 URL** 칸을 채운다.
-
-### ⚠️ 결격 회피 체크리스트
-
-- [ ] URL이 **2026-09-11(금) 23:59까지** 살아 있어야 한다. 끊기면 **결격**
-- [ ] 배포 후 검증 1~6(기능명세서 §5-2)을 실제 URL에서 전부 돌려본다
-- [ ] Gemini 무료 티어 한도(분당 10~15회)를 넘기지 않는다. 심사 기간엔 여유가 크지만, 검증은 배포 직후 한 번에 몰아서 하지 말 것
-- [ ] 다른 브라우저(Chrome/Safari)에서 각각 확인
 
 ## 하지 않는 것
 
